@@ -5,6 +5,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import ucar.nc2.*;
+import ucar.nc2.dataset.*;
+import ucar.ma2.*;
+
+import java.io.IOException;
+
 
 
 @RestController
@@ -13,7 +19,76 @@ public class ProjectApplication {
 
 	@GetMapping("/get-info")
 	public String getInfo() {
-		return "get-info called";
+        StringBuilder sb = new StringBuilder();
+        String fileName = "concentration.timeseries.nc";
+        String filePath = "src/main/resources/static/" + fileName;
+        try {
+            // Open the NetCDF file
+            NetcdfFile ncFile = NetcdfFiles.open(filePath);
+
+            // Dump basic information about the NetCDF file
+            sb.append("netcdf ").append(fileName).append(" {\n\n");
+
+            // Dump the dimensions
+            sb.append("dimensions:\n");
+            for (Dimension dim : ncFile.getDimensions()) {
+                sb.append("    ").append(dim.getShortName()).append(" = ")
+                        .append(dim.getLength()).append(" ;\n");
+            }
+
+            // Dump the variables
+            sb.append("\nvariables:\n");
+            for (Variable var : ncFile.getVariables()) {
+                sb.append("    ").append(var.getFullName()).append(" ")
+                        .append(var.getDataType()).append(" ")
+                        .append(var.getDimensionsString()).append(" ;\n");
+
+                // Dump variable attributes
+                for (Attribute attr : var.getAttributes()) {
+                    sb.append("        ").append(var.getFullName())
+                            .append(":").append(attr.getName()).append(" = ")
+                            .append(attr.getValues()).append(" ;\n");
+                }
+            }
+
+            // Dump the data for each variable
+            sb.append("\ndata:\n");
+            for (Variable var : ncFile.getVariables()) {
+                sb.append("    ").append(var.getFullName()).append(" =\n");
+                Array data = var.read();
+                int[] shape = data.getShape();
+
+                // Iterate over the data and print it (for small datasets)
+                // For large datasets, you might want to only print a subset
+                int[] index = new int[shape.length];
+                int totalSize = 1;
+                for (int i : shape) {
+                    totalSize *= i;
+                }
+
+                // We will print only the first few elements to avoid overwhelming the output
+                int printLimit = 100;  // Limit the output to the first 100 elements
+                for (int i = 0; i < totalSize && i < printLimit; i++) {
+                    if (i > 0 && i % shape[shape.length - 1] == 0) {
+                        sb.append("\n");
+                    }
+
+                    sb.append(data.getDouble(i)).append(", ");
+                }
+
+                sb.append(";\n\n");
+            }
+
+            // Close the NetCDF file
+            ncFile.close();
+
+            sb.append("}\n");
+
+        } catch (IOException e) {
+            sb.append("Error reading NetCDF file: ").append(e.getMessage());
+        }
+
+        return sb.toString();
 	}
 
 	@GetMapping("/get-data")
