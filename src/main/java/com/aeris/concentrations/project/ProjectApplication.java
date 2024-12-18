@@ -10,6 +10,7 @@ import ucar.nc2.dataset.*;
 import ucar.ma2.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 
 
@@ -17,12 +18,15 @@ import java.io.IOException;
 @SpringBootApplication
 public class ProjectApplication {
 
+    String fileName = "concentration.timeseries.nc";
+    String filePath = "src/main/resources/static/" + fileName;
+
 	@GetMapping("/get-info")
 	public String getInfo() {
         StringBuilder sb = new StringBuilder();
-        String fileName = "concentration.timeseries.nc";
-        String filePath = "src/main/resources/static/" + fileName;
+
         try {
+
             // Open the NetCDF file
             NetcdfFile ncFile = NetcdfFiles.open(filePath);
 
@@ -92,8 +96,39 @@ public class ProjectApplication {
 	}
 
 	@GetMapping("/get-data")
-	public String getData(@RequestParam int timeIndex, @RequestParam int zIndex) {
-		return "get-data called with timeIndex: " + timeIndex + " zIndex: " + zIndex;
+	public ArrayList<double[]> getData(@RequestParam int timeIndex, @RequestParam int zIndex) {
+        StringBuilder sb = new StringBuilder();
+        ArrayList<double[]> points = new ArrayList<>();
+        try{
+            // Open the NetCDF file
+            NetcdfFile ncFile = NetcdfFiles.open(filePath);
+
+            Array x_vals = ncFile.findVariable("x").read();
+            Array y_vals = ncFile.findVariable("y").read();
+            Array concentration = ncFile.findVariable("concentration").read();
+
+            int num_x_vals = x_vals.getShape()[0];
+            int num_y_vals = y_vals.getShape()[0];
+            for( int i = 0; i < num_x_vals; i++)
+            {
+                for( int j = 0; j < num_y_vals; j++)
+                {
+                    //ArrayDouble point = {x_vals[i], y_vals[j]};
+                    double x_point = x_vals.getDouble(i);
+                    double y_point = y_vals.getDouble(j);
+                    Index index = concentration.getIndex();
+                    index.set(timeIndex, zIndex, j, i);
+                    double concentration_point = concentration.getDouble(index);
+                    points.add(new double[]{x_point, y_point, concentration_point});
+                }
+            }
+
+        } catch (IOException e)
+        {
+            sb.append("Error reading NetCDF file: ").append(e.getMessage());
+        }
+
+		return points;
 	}
 
 	@GetMapping("/get-image")
