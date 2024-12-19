@@ -35,6 +35,16 @@
 			<name>Unidata All</name>
 			<url>https://artifacts.unidata.ucar.edu/repository/unidata-all/</url>
 		</repository>
+	<repository>
+		<id>jzy3d-snapshots</id>
+		<name>Jzy3d Snapshots</name>
+		<url>https://maven.jzy3d.org/snapshots/</url>
+	</repository>
+	<repository>
+		<id>jzy3d-releases</id>
+		<name>Jzy3d Releases</name>
+		<url>https://maven.jzy3d.org/releases/</url>
+	</repository>
 	</repositories>
 	<dependencies>
 		<dependency>
@@ -54,7 +64,41 @@
 			<version>5.6.0</version>
 			<scope>compile</scope>
 		</dependency>
-	</dependencies>
+
+		<dependency>
+			<groupId>org.jzy3d</groupId>
+			<artifactId>jzy3d-native-jogl-awt</artifactId>
+			<version>2.0.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jzy3d</groupId>
+			<artifactId>jzy3d-native-jogl-swing</artifactId>
+			<version>2.0.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jzy3d</groupId>
+			<artifactId>jzy3d-native-jogl-newt</artifactId>
+			<version>2.0.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jzy3d</groupId>
+			<artifactId>jzy3d-native-jogl-swt</artifactId>
+			<version>2.0.0-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jzy3d</groupId>
+			<artifactId>jzy3d-tester-native</artifactId>
+			<version>2.0.0-SNAPSHOT</version>
+			<!-- not scoped test to demonstrate DebugGL in src/main/java -->
+		</dependency>
+	
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.6</version>
+		</dependency>
+ </dependencies>
 
 	<build>
 		<plugins>
