@@ -2,8 +2,6 @@
 
 Aeris Project Assignment
 You should have received the file “concentration.timeseries.nc” with this assignment.
-This file is a NetCDF file and will be the foundation of this assignment. If you did not receive it, please
-contact jlefebvre@aerisllc.com.
 The requirements for this assignment are as follows:
 1. Publicly hosted repository of your choice (GitHub, bitbucket, etc)
 2. The use of Spring Boot REST framework
