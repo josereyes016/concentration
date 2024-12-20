@@ -45,3 +45,8 @@ http://localhost:8080/get-info
 http://localhost:8080/get-data?timeIndex=2&zIndex=0
 http://localhost:8080/get-image?timeIndex=2&zIndex=0
 
+
+Hosted
+
+https://concentration-latest.onrender.com
+
