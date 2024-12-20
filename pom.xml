@@ -65,40 +65,34 @@
 			<scope>compile</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>org.jzy3d</groupId>
-			<artifactId>jzy3d-native-jogl-awt</artifactId>
-			<version>2.0.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.jzy3d</groupId>
-			<artifactId>jzy3d-native-jogl-swing</artifactId>
-			<version>2.0.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.jzy3d</groupId>
-			<artifactId>jzy3d-native-jogl-newt</artifactId>
-			<version>2.0.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.jzy3d</groupId>
-			<artifactId>jzy3d-native-jogl-swt</artifactId>
-			<version>2.0.0-SNAPSHOT</version>
-		</dependency>
+	<dependency>
+		<groupId>org.jzy3d</groupId>
+		<artifactId>jzy3d-native-jogl-awt</artifactId>
+		<version>2.0.1-SNAPSHOT</version>
+	</dependency>
+	<dependency>
+		<groupId>org.jzy3d</groupId>
+		<artifactId>jzy3d-native-jogl-swing</artifactId>
+		<version>2.0.1-SNAPSHOT</version>
+	</dependency>
+	<dependency>
+		<groupId>org.jzy3d</groupId>
+		<artifactId>jzy3d-native-jogl-newt</artifactId>
+		<version>2.0.1-SNAPSHOT</version>
+	</dependency>
+	<dependency>
+		<groupId>org.jzy3d</groupId>
+		<artifactId>jzy3d-native-jogl-swt</artifactId>
+		<version>2.0.1-SNAPSHOT</version>
+	</dependency>
 
-		<dependency>
-			<groupId>org.jzy3d</groupId>
-			<artifactId>jzy3d-tester-native</artifactId>
-			<version>2.0.0-SNAPSHOT</version>
-			<!-- not scoped test to demonstrate DebugGL in src/main/java -->
-		</dependency>
-	
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>2.6</version>
-		</dependency>
- </dependencies>
+	<dependency>
+		<groupId>org.jzy3d</groupId>
+		<artifactId>jzy3d-tester-native</artifactId>
+		<version>2.0.1-SNAPSHOT</version>
+		<!-- not scoped test to demonstrate DebugGL in src/main/java -->
+	</dependency>
+	</dependencies>
 
 	<build>
 		<plugins>

@@ -9,6 +9,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.jogamp.opengl.util.texture.TextureData;
+
+//import com.jogamp.opengl.GLCapabilities;
+//import com.jogamp.opengl.GLProfile;
+
 import ucar.nc2.*;
 import ucar.ma2.Array;
 import ucar.ma2.*;
@@ -17,23 +22,27 @@ import ucar.nc2.write.Ncdump;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.jzy3d.maths.*;
 import org.jzy3d.colors.colormaps.ColorMapRainbow;
 import org.jzy3d.colors.colormaps.IColorMap;
+import org.jzy3d.plot3d.primitives.Scatter;
 import org.jzy3d.plot3d.primitives.Shape;
-import org.jzy3d.plot3d.rendering.canvas.Quality;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
 import org.jzy3d.chart.Chart;
-import org.jzy3d.chart.factories.ChartFactory;
-import org.jzy3d.chart.factories.IChartFactory;
+import org.jzy3d.chart.factories.AWTChartFactory;
+import org.jzy3d.chart.factories.OffscreenChartFactory;
 import org.jzy3d.plot3d.primitives.Surface;
+import org.jzy3d.plot3d.rendering.canvas.*;
+
 
 import javax.imageio.ImageIO;
 
-import org.apache.commons.io.output.ByteArrayOutputStream;
 
 
 @RestController
@@ -196,7 +205,7 @@ public class ProjectApplication {
                     Index index = concentration.getIndex();
                     index.set(timeIndex, zIndex, j, i);
                     float concentration_point = concentration.getFloat(index);
-                    points.add(new Coord3d(x_point, y_point, concentration_point));
+                    points.add(new Coord3d(x_point, y_point, concentration_point*1));
                 }
             }
 
@@ -206,18 +215,20 @@ public class ProjectApplication {
             IColorMap colorMap = new ColorMapRainbow();
             // Create a Surface using the Coord3d and ColorMap
             float fi = 0;
-            Shape surface = Surface.shape(points, colorMap, fi);
+            //Shape surface = Surface.shape(points, colorMap, fi);
+
+            Scatter surface = new Scatter(points);
 
             // Create a chart
-            IChartFactory chartFactory = new ChartFactory();
-            Chart chart = chartFactory.newChart(Quality.Advanced().setHiDPIEnabled(true));
+            Chart chart = new Chart(new OffscreenChartFactory(3000, 3000),  Quality.Advanced());
             chart.getScene().getGraph().add(surface);
-            // chart.getAxeLayout().setXAxeLabel("Longitude");
-            // chart.getAxeLayout().setYAxeLabel("Latitude");
-            // chart.getAxeLayout().setZAxeLabel("Value");
 
-            // Render the chart to a BufferedImage (in this case, as a PNG image)
-            BufferedImage image = new BufferedImage(num_x_vals, num_y_vals,0);// chart.getCanvas().getImage();
+            chart.add(surface);
+
+            File n = new File("src/main/resources/static/test.png");
+            chart.getCanvas().screenshot(n);
+            
+            BufferedImage image = textureDataToBufferedImage((TextureData) chart.screenshot());
 
             // Convert BufferedImage to byte array
             ImageIO.write(image, "PNG", byteArrayOutputStream);
@@ -234,6 +245,23 @@ public class ProjectApplication {
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.IMAGE_PNG_VALUE)
                 .body(imageBytes);
 	}
+
+    /**
+     * Convert TextureData to BufferedImage
+     *
+     * @param textureData The TextureData to be converted
+     * @return The resulting BufferedImage
+     */
+    public static BufferedImage textureDataToBufferedImage(TextureData textureData) {
+        // Get the width and height of the texture
+        int width = textureData.getWidth();
+        int height = textureData.getHeight();
+
+        // Create a BufferedImage to store the result
+        BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+
+        return bufferedImage;
+    }
 	
 	public static void main(String[] args) {
 		SpringApplication.run(ProjectApplication.class, args);
