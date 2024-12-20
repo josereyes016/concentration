@@ -1,0 +1,12 @@
+{"properties": [
+  {
+    "name": "netcdf.location",
+    "type": "java.lang.String",
+    "description": "A description for 'netcdf.location'"
+  },
+  {
+    "name": "netcdf.name",
+    "type": "java.lang.String",
+    "description": "A description for 'netcdf.name'"
+  }
+]}
